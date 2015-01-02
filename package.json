@@ -1,8 +1,9 @@
 {
   "name": "sshane",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Wrapper over ssh2",
   "repository": "https://github.com/axelhzf/sshane",
+  "tags": ["ssh", "ssh2", "co", "sftp"],
   "dependencies": {
     "bluebird": "^2.5.3",
     "debug": "^2.1.1",

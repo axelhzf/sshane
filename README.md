@@ -4,7 +4,7 @@ SSHane is a wrapper over [ssh2](https://github.com/mscdex/ssh2) module. It is ba
 
 # Installation
 
-```bash
+```
 npm install sshane --save
 ```
 
@@ -12,7 +12,8 @@ npm install sshane --save
 
 The client has a promise API so it works very well [co](https://github.com/tj/code)
 
-```js
+``` js
+var co = require("co");
 var SSHane = require("sshane");
 
 co(function* () {
@@ -27,8 +28,8 @@ co(function* () {
 })
 ```
 
-To enable debug mode use
+To enable debug mode
 
-```bash
+```
 DEBUG=sshane node yourscript.js
 ```
