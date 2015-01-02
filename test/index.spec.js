@@ -6,7 +6,7 @@ var exec = require("mz/child_process").exec;
 
 var Sshane = require("../index");
 
-describe("Sshane", function () {
+describe("Sshane ", function () {
 
   var client;
 
