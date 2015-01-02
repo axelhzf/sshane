@@ -2,6 +2,7 @@
   "name": "sshane",
   "version": "0.0.1",
   "description": "Wrapper over ssh2",
+  "repository": "https://github.com/axelhzf/sshane",
   "dependencies": {
     "bluebird": "^2.5.3",
     "debug": "^2.1.1",
