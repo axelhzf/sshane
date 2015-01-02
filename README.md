@@ -26,3 +26,9 @@ co(function* () {
     console.error(e.stack);
 })
 ```
+
+To enable debug mode use
+
+```
+DEBUG=sshane node yourscript.js
+```
