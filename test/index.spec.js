@@ -4,14 +4,14 @@ var path = require("path");
 var fs = require("mz/fs");
 var exec = require("mz/child_process").exec;
 
-var Sshane = require("../index");
+var SSHane = require("../index");
 
-describe("Sshane", function () {
+describe("SSHane", function () {
 
   var client;
 
   beforeEach(function * () {
-    client = new Sshane({host: "localhost", user: "axelhzf"});
+    client = new SSHane({host: "localhost", user: "axelhzf"});
     yield client.connect();
   });
 
@@ -21,7 +21,13 @@ describe("Sshane", function () {
 
   it("should connect to localhost and exec a command", function* () {
     var result = yield client.exec("ls " + __dirname);
-    expect(result).to.eql("index.spec.js\n");
+    expect(result).to.eql("index.spec.js\r\n");
+  });
+
+  it("should keep an open session", function* () {
+    yield client.exec("cd " + __dirname);
+    var result = yield client.exec("ls");
+    expect(result).to.eql("index.spec.js\r\n");
   });
 
   it("should put and get a file", function* () {
@@ -38,7 +44,7 @@ describe("Sshane", function () {
         "a",
         "a-get",
         "a-put"
-      ].join("\n") + "\n");
+      ].join("\t") + "\r\n");
     } finally {
       yield exec("rm -rf " + tmpPath);
     }

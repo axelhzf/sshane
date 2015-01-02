@@ -5,6 +5,8 @@ var debug = require("debug")("sshane");
 var Connection = require("ssh2");
 var read = require('read-all-stream');
 var fmt = require("util").format;
+var split = require("split");
+var fmt = require("util").format;
 
 function Sshane(options) {
   var privateKeyPath = options.privateKey || process.env['SHH_PRIVATE_KEY'] || process.env['HOME'] + '/.ssh/id_rsa';
@@ -14,6 +16,8 @@ function Sshane(options) {
     privateKey: privateKey
   });
   this.connection = new Connection(this.options);
+  this.startToken = "__SHH_START_TOKEN__";
+  this.endToken = "__SHH_END_TOKEN__";
 }
 
 Sshane.prototype.connect = function () {
@@ -26,11 +30,33 @@ Sshane.prototype.connect = function () {
         if (err) {
           debug("Error getting sftp connection");
           reject(sftp);
-        } else {
-          debug("Connected to %s", self.options.host);
-          self.sftp = sftp;
-          resolve();
+          return;
         }
+        self.sftp = sftp;
+        self.connection.shell(function (err, shell) {
+          if (err) {
+            debug("Error getting the shell");
+            reject();
+            return;
+          }
+          debug("Connected to %s", self.options.host);
+
+          // this code need to be optimized using buffers
+          self.shell = shell;
+          self.shell.pipe(split());
+          var bufs = [];
+          self.shell.on("data", function (line) {
+            line = line.toString("utf-8");
+            if (line.match(self.startToken)) {
+              bufs = [];
+            }else if (line.match(self.endToken)) {
+              shell.emit("result", bufs.join("\n"));
+            } else {
+              bufs.push(line);
+            }
+          });
+          resolve();
+        });
       });
     });
     self.connection.connect(self.options);
@@ -40,31 +66,13 @@ Sshane.prototype.connect = function () {
 Sshane.prototype.exec = function (cmd) {
   var self = this;
   debug("Executing %s", cmd);
+
   return new Promise(function (resolve, reject) {
-    self.connection.exec(cmd, function (err, stream) {
-      if (err) reject();
-
-      var resultCode;
-
-      read(stream, 'utf-8', function (err, data) {
-        if (err) {
-          return reject(new Error(fmt("Error reading stream result from `%s`", cmd)));
-        } else if (resultCode !== 0) {
-          var e = new Error(fmt("Executing `%s` return error code %d", cmd, resultCode));
-          reject(e);
-        } else {
-          resolve(data);
-        }
-      });
-
-      stream.on('exit', function (code, signal) {
-        resultCode = code;
-      }).on('close', function () {
-        //debug("stream close");
-      }).stderr.on('data', function (data) {
-          console.log('STDERR: ' + data);
-        });
+    var execCmd = fmt("echo %s;%s; echo %s\r\n", self.startToken, cmd, self.endToken);
+    self.shell.once("result", function (result) {
+      resolve(result);
     });
+    self.shell.write(execCmd);
   });
 };
 
