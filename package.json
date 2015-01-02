@@ -1,0 +1,21 @@
+{
+  "name": "sshane",
+  "version": "0.0.1",
+  "description": "Wrapper over ssh2",
+  "dependencies": {
+    "bluebird": "^2.5.3",
+    "debug": "^2.1.1",
+    "mz": "^1.2.1",
+    "read-all-stream": "^0.1.2",
+    "ssh2": "^0.3.6"
+  },
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "co": "^4.1.0",
+    "co-mocha": "^1.1.0",
+    "mocha": "^2.1.0"
+  },
+  "scripts": {
+    "test": "node_modules/.bin/mocha --harmony test --require co-mocha "
+  }
+}
