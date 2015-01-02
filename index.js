@@ -4,7 +4,6 @@ var fs = require("mz/fs");
 var debug = require("debug")("sshane");
 var Connection = require("ssh2");
 var read = require('read-all-stream');
-var fmt = require("util").format;
 var split = require("split");
 var fmt = require("util").format;
 
