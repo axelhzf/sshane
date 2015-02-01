@@ -40,20 +40,22 @@ Sshane.prototype.connect = function () {
           }
           debug("Connected to %s", self.options.host);
 
+          var bufs = [];
+
           // this code need to be optimized using buffers
           self.shell = shell;
-          self.shell.pipe(split());
-          var bufs = [];
-          self.shell.on("data", function (line) {
-            line = line.toString("utf-8");
-            if (line.match(self.startToken)) {
-              bufs = [];
-            }else if (line.match(self.endToken)) {
-              shell.emit("result", bufs.join("\n"));
-            } else {
-              bufs.push(line);
-            }
-          });
+          self.shell
+            .pipe(split())
+            .on("data", function (line) {
+              line = line.toString("utf-8");
+              if (line.match(self.startToken)) {
+                bufs = [];
+              } else if (line.match(self.endToken)) {
+                shell.emit("result", bufs.join("\n"));
+              } else {
+                bufs.push(line);
+              }
+            });
           resolve();
         });
       });

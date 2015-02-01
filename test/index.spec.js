@@ -21,13 +21,13 @@ describe("SSHane", function () {
 
   it("should connect to localhost and exec a command", function* () {
     var result = yield client.exec("ls " + __dirname);
-    expect(result).to.eql("index.spec.js\r\n");
+    expect(result).to.eql("index.spec.js");
   });
 
   it("should keep an open session", function* () {
     yield client.exec("cd " + __dirname);
     var result = yield client.exec("ls");
-    expect(result).to.eql("index.spec.js\r\n");
+    expect(result).to.eql("index.spec.js");
   });
 
   it("should put and get a file", function* () {
@@ -44,7 +44,7 @@ describe("SSHane", function () {
         "a",
         "a-get",
         "a-put"
-      ].join("\t") + "\r\n");
+      ].join("\t"));
     } finally {
       yield exec("rm -rf " + tmpPath);
     }
