@@ -1,6 +1,6 @@
 {
   "name": "sshane",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Wrapper over ssh2",
   "repository": "https://github.com/axelhzf/sshane",
   "tags": ["ssh", "ssh2", "co", "sftp"],
